@@ -1,22 +1,28 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
 
-export default function BlogSearch() {
+function SearchContent() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
-  const [result, setResult] = useState<string[]>([]);
-
-  useEffect(() => {
-    // 仮実装：通常はサーバーAPI経由で検索
-    setResult(["Next.js入門", "Tailwind概要"].filter(t => t.includes(query)));
-  }, [query]);
+  const query = searchParams.get("q");
 
   return (
-    <main>
-      <h1 className="text-2xl font-bold mb-4">検索結果：{query}</h1>
-      <ul>{result.map((r) => <li key={r}>{r}</li>)}</ul>
-    </main>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">検索結果</h1>
+      {query ? (
+        <p>「{query}」の検索結果を表示しています。</p>
+      ) : (
+        <p>検索キーワードを入力してください。</p>
+      )}
+    </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<p>読み込み中...</p>}>
+      <SearchContent />
+    </Suspense>
   );
 }
